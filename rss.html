@@ -124,6 +124,7 @@
       accountId: null,
       max_id: null,
       mode: 'public', // 'public' or 'home'
+      refreshInterval: null // <-- add for interval tracking
     };
     document.querySelectorAll('input[name="mode"]').forEach(r => {
       r.addEventListener('change', () => {
@@ -304,6 +305,28 @@
       els.feed.innerHTML = '';
       loadFeed(false);
     }
+
+    // --- Auto-refresh logic ---
+    function startAutoRefresh() {
+      // Clear any existing interval
+      if (state.refreshInterval) clearInterval(state.refreshInterval);
+      // Set interval to refresh every 60 seconds (adjust as needed)
+      state.refreshInterval = setInterval(() => {
+        resetAndLoad();
+      }, 60000);
+    }
+    function stopAutoRefresh() {
+      if (state.refreshInterval) clearInterval(state.refreshInterval);
+      state.refreshInterval = null;
+    }
+
+    // Start auto-refresh when page loads and when config changes
+    document.addEventListener('DOMContentLoaded', startAutoRefresh);
+    els.save.addEventListener('click', startAutoRefresh);
+    els.useExample.addEventListener('click', startAutoRefresh);
+
+    // Optional: stop auto-refresh when leaving the page
+    window.addEventListener('beforeunload', stopAutoRefresh);
 
     if (els.instance.value && els.acct.value){
       resetAndLoad();
