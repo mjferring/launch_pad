@@ -328,7 +328,7 @@
       });
     });
     for(const key in FEEDS){ loadFeed(key); }
-    setInterval(() => { for(const key in FEEDS){ loadFeed(key); } }, 10 * 60 * 1000);
+    setInterval(() => { for(const key in FEEDS){ loadFeed(key); } }, 1 * 60 * 1000);
 
     // Optional: use your own Cloudflare Worker proxy for reliability:
     // PROXY = "https://<your-worker-subdomain>.workers.dev/?url=";
