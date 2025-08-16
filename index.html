@@ -277,10 +277,7 @@
         const doc = new DOMParser().parseFromString(xml, 'text/xml');
         const nodes = Array.from(doc.querySelectorAll('item'));
         const fresh = nodes.map(toItem);
-        const existing = store[key] || [];
-        const seen = new Set(existing.map(i => i.id));
-        for(const f of fresh){ if(!seen.has(f.id)) existing.push(f); }
-        store[key] = existing;
+        store[key] = fresh; // Replace with only the latest items
         render(key);
         if (status) status.textContent = 'Updated ' + new Date().toLocaleTimeString();
       } catch (e){
