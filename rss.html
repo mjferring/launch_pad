@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mastodon Launchpad — Public Feed</title>
+  <style>
+    :root { --bg: #0b1220; --card: #121a2b; --text: #dbe3f0; --muted: #9aa7bd; --border: #22304b; --accent:#60a5fa; --shadow: 0 12px 24px rgba(0,0,0,.45); --radius: 16px; }
+    @media (prefers-color-scheme: light){
+      :root { --bg:#f6f7fb; --card:#ffffff; --text:#1f2937; --muted:#6b7280; --border:#e5e7eb; --accent:#2563eb; --shadow:0 10px 24px rgba(2,8,20,.06); }
+    }
+    * { box-sizing: border-box }
+    body { margin:0; font: 16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Noto Sans, Ubuntu, Cantarell, Helvetica Neue, Arial; background: var(--bg); color: var(--text); padding: 24px }
+    .container { max-width: 980px; margin: 0 auto; display: grid; gap: 20px }
+    header { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap }
+    h1 { margin: 0; font-size: 26px }
+    .card { background: linear-gradient(180deg, rgba(255,255,255,0.03), transparent), var(--card); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); padding: 16px }
+    .row { display: grid; grid-template-columns: 1fr; gap: 12px }
+    @media (min-width: 900px){ .row-2 { grid-template-columns: 1fr 1fr } }
+    label { font-weight: 600; font-size: 14px }
+    input[type="text"], input[type="url"], input[type="password"] {
+      width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--border); background: transparent; color: var(--text);
+    }
+    .hint { color: var(--muted); font-size: 12px }
+    button { padding: 10px 14px; border-radius: 10px; border: 1px solid var(--border); background: linear-gradient(180deg, rgba(96,165,250,.2), rgba(96,165,250,.05)); color: var(--text); cursor: pointer; font-weight: 700 }
+    button.secondary { background: linear-gradient(180deg, rgba(14,165,233,.18), rgba(14,165,233,.05)) }
+    .toolbar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap }
+    .feed { display: grid; gap: 14px }
+    .toot { border: 1px solid var(--border); border-radius: 14px; padding: 12px; background: linear-gradient(180deg, rgba(255,255,255,.04), transparent) }
+    .toot header { display: flex; gap: 10px; align-items: center }
+    .avatar { width: 42px; height: 42px; border-radius: 999px; border: 1px solid var(--border); background: #0002; object-fit: cover }
+    .display-name { font-weight: 800 }
+    .handle { color: var(--muted); font-size: 13px }
+    .meta { color: var(--muted); font-size: 12px }
+    .content { margin-top: 8px }
+    .content img { max-width: 100%; border-radius: 10px; border: 1px solid var(--border) }
+    .gallery { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 8px }
+    .cw { background: transparent; border: 1px dashed var(--border); padding: 10px; border-radius: 10px; margin-top: 8px }
+    .cw summary { cursor: pointer; font-weight: 700 }
+    .boost { color: var(--muted); font-size: 12px; margin-bottom: 6px }
+    .stats { color: var(--muted); font-size: 12px; display:flex; gap:12px; margin-top: 6px }
+    .loadmore { text-align: center }
+    a { color: var(--accent); text-decoration: none }
+    a:hover { text-decoration: underline }
+    .error { color: #ef4444; font-weight: 700 }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Mastodon Launchpad — Public Feed</h1>
+      <div class="toolbar">
+        <button id="refreshBtn">Refresh</button>
+      </div>
+    </header>
+
+    <section class="card">
+      <div class="row row-2">
+        <div>
+          <label for="instance">Instance domain</label>
+          <input id="instance" type="text" placeholder="e.g. mastodon.social (no https://)" />
+          <div class="hint">This is the server your account lives on.</div>
+        </div>
+        <div>
+          <label for="acct">Account handle (acct)</label>
+          <input id="acct" type="text" placeholder="e.g. username or username@mastodon.social" />
+          <div class="hint">You can include the server here or leave just the username if the instance is set.</div>
+        </div>
+      </div>
+      <div class="toolbar" style="margin-top:10px">
+        <button id="saveCfg">Save</button>
+        <button id="useExample" class="secondary">Use Example</button>
+        <span id="status" class="hint"></span>
+      </div>
+      <details style="margin-top:8px">
+        <summary>Advanced: Proxy & Token</summary>
+        <div class="row">
+          <div>
+            <label for="proxy">CORS Proxy (optional)</label>
+            <input id="proxy" type="url" placeholder="https://rss.yourdomain.com/?url=" />
+            <div class="hint">If your instance blocks CORS, route requests via your Cloudflare Worker (leave blank to call the instance directly).</div>
+          </div>
+          <div>
+            <label for="token">Access token (optional)</label>
+            <input id="token" type="password" placeholder="Paste token if you want Home timeline" />
+            <div class="hint">If provided, you can switch to “Home timeline” mode (private). Otherwise, we’ll show your public posts.</div>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <section class="card">
+      <div class="toolbar" style="justify-content: space-between">
+        <div class="toolbar">
+          <strong>Feed:</strong>
+          <label><input type="radio" name="mode" value="public" checked /> Public posts</label>
+          <label><input type="radio" name="mode" value="home" /> Home timeline (requires token)</label>
+        </div>
+        <div class="toolbar">
+          <button id="loadMore" class="secondary">Load more</button>
+        </div>
+      </div>
+      <div id="feed" class="feed"></div>
+      <div id="error" class="error"></div>
+    </section>
+  </div>
+
+  <script>
+    // --- Configuration persistence ---
+    const els = {
+      instance: document.getElementById('instance'),
+      acct: document.getElementById('acct'),
+      proxy: document.getElementById('proxy'),
+      token: document.getElementById('token'),
+      save: document.getElementById('saveCfg'),
+      useExample: document.getElementById('useExample'),
+      status: document.getElementById('status'),
+      feed: document.getElementById('feed'),
+      loadMore: document.getElementById('loadMore'),
+      refresh: document.getElementById('refreshBtn'),
+      error: document.getElementById('error')
+    };
+    const state = {
+      accountId: null,
+      max_id: null,
+      mode: 'public', // 'public' or 'home'
+    };
+    document.querySelectorAll('input[name="mode"]').forEach(r => {
+      r.addEventListener('change', () => {
+        state.mode = document.querySelector('input[name="mode"]:checked').value;
+        resetAndLoad();
+      });
+    });
+    function loadSaved(){
+      try {
+        const cfg = JSON.parse(localStorage.getItem('mastodon-cfg') || '{}');
+        for(const k of ['instance','acct','proxy','token']){
+          if(cfg[k]) els[k].value = cfg[k];
+        }
+      } catch {}
+    }
+    function saveCfg(){
+      const cfg = { instance: els.instance.value.trim(), acct: els.acct.value.trim(), proxy: els.proxy.value.trim(), token: els.token.value.trim() };
+      localStorage.setItem('mastodon-cfg', JSON.stringify(cfg));
+      els.status.textContent = 'Saved.';
+      setTimeout(()=> els.status.textContent = '', 1500);
+    }
+    els.save.addEventListener('click', saveCfg);
+    els.useExample.addEventListener('click', () => {
+      els.instance.value = 'mastodon.social';
+      els.acct.value = 'Gargron@mastodon.social'; // example public account
+      saveCfg();
+      resetAndLoad();
+    });
+    els.refresh.addEventListener('click', () => resetAndLoad());
+    els.loadMore.addEventListener('click', () => loadFeed(true));
+
+    loadSaved();
+
+    // --- Fetch helpers ---
+    function api(instance, path, params={}, useProxy=false){
+      const url = new URL(`https://${instance}${path}`);
+      for(const [k,v] of Object.entries(params)){ if(v!==undefined && v!==null && v!=='') url.searchParams.set(k, v); }
+      const target = url.toString();
+      const proxy = els.proxy.value.trim();
+      const finalUrl = (useProxy && proxy) ? (proxy + encodeURIComponent(target)) : target;
+      const headers = { 'Accept': 'application/json' };
+      const token = els.token.value.trim();
+      if (state.mode === 'home' && token) headers['Authorization'] = 'Bearer ' + token;
+      return fetch(finalUrl, { headers });
+    }
+
+    // --- Sanitize simple HTML (allow basic tags & links) ---
+    function sanitize(html){
+      try{
+        const doc = new DOMParser().parseFromString(html, 'text/html');
+        const allowed = new Set(['A','P','BR','SPAN','EM','STRONG','UL','OL','LI','CODE','PRE','BLOCKQUOTE']);
+        (function walk(node){
+          const children = Array.from(node.childNodes);
+          for(const c of children){
+            if(c.nodeType === 1){
+              if(!allowed.has(c.tagName)){
+                while(c.firstChild) node.insertBefore(c.firstChild, c);
+                node.removeChild(c);
+              } else {
+                if(c.tagName === 'A'){
+                  c.setAttribute('rel','noopener noreferrer');
+                  c.setAttribute('target','_blank');
+                }
+                walk(c);
+              }
+            }
+          }
+        })(doc.body);
+        return doc.body.innerHTML;
+      }catch{ return html; }
+    }
+
+    // --- Render toot ---
+    function tootHtml(status){
+      const s = status.reblog ? status.reblog : status;
+      const boostedBy = status.reblog ? (status.account?.acct || 'Boosted') : null;
+      const media = (s.media_attachments || []);
+      const pics = media.filter(m => m.type === 'image');
+      const vids = media.filter(m => m.type === 'video' || m.type === 'gifv');
+
+      const cw = s.spoiler_text && s.spoiler_text.trim().length > 0;
+      const contentHtml = sanitize(s.content || '');
+      const created = new Date(s.created_at);
+      const userUrl = s.account?.url || '#';
+      const avatar = s.account?.avatar_static || s.account?.avatar;
+
+      let mediaHtml = '';
+      if (pics.length){
+        mediaHtml += '<div class="gallery">';
+        for (const m of pics){
+          const alt = m.description ? `alt="${m.description.replace(/"/g,'&quot;')}"` : '';
+          mediaHtml += `<a href="${m.url}" target="_blank" rel="noopener noreferrer"><img src="${m.preview_url || m.url}" ${alt}></a>`;
+        }
+        mediaHtml += '</div>';
+      }
+      if (vids.length){
+        for(const v of vids){
+          mediaHtml += `<video controls preload="metadata" style="width:100%;border-radius:10px;border:1px solid var(--border);margin-top:8px">
+            <source src="${v.url}" type="video/mp4">
+          </video>`;
+        }
+      }
+
+      const stats = `
+        <div class="stats">
+          <span>💬 ${s.replies_count}</span>
+          <span>🔁 ${s.reblogs_count}</span>
+          <span>⭐ ${s.favourites_count}</span>
+        </div>`;
+
+      const body = cw
+        ? `<details class="cw"><summary>${s.spoiler_text} — show more</summary><div class="content">${contentHtml}${mediaHtml}</div></details>`
+        : `<div class="content">${contentHtml}${mediaHtml}</div>`;
+
+      return `
+      <article class="toot">
+        ${boostedBy ? `<div class="boost">🔁 Boosted by ${boostedBy}</div>` : ''}
+        <header>
+          <a href="${userUrl}" target="_blank" rel="noopener noreferrer"><img class="avatar" src="${avatar}" alt=""></a>
+          <div>
+            <div class="display-name">${s.account?.display_name || s.account?.username || ''}</div>
+            <div class="handle">@${s.account?.acct || ''} · <span class="meta">${created.toLocaleString()}</span></div>
+          </div>
+        </header>
+        ${body}
+        ${stats}
+      </article>`;
+    }
+
+    // --- Load logic ---
+    async function resolveAccountId(){
+      const instance = els.instance.value.trim();
+      let acct = els.acct.value.trim();
+      if(!instance || !acct) throw new Error('Enter instance and account');
+      const res = await api(instance, '/api/v1/accounts/lookup', { acct }, !!els.proxy.value.trim());
+      if(!res.ok) throw new Error('Lookup failed: ' + res.status);
+      const data = await res.json();
+      return data.id;
+    }
+
+    async function loadFeed(paginate=false){
+      els.error.textContent = '';
+      const instance = els.instance.value.trim();
+      if(!instance) { els.error.textContent = 'Set instance domain first.'; return; }
+      try{
+        let url, params;
+        if(state.mode === 'home' && els.token.value.trim()){
+          url = '/api/v1/timelines/home';
+          params = { limit: 20 };
+        } else {
+          if(!state.accountId) state.accountId = await resolveAccountId();
+          url = `/api/v1/accounts/${state.accountId}/statuses`;
+          params = { exclude_replies: false, exclude_reblogs: false, limit: 20 };
+        }
+        if(paginate && state.max_id) params.max_id = state.max_id;
+
+        const res = await api(instance, url, params, !!els.proxy.value.trim());
+        if(!res.ok) throw new Error('Fetch failed: ' + res.status);
+        const arr = await res.json();
+        if(arr.length) state.max_id = arr[arr.length - 1].id;
+
+        if(!paginate) els.feed.innerHTML = '';
+        for(const st of arr){
+          const html = tootHtml(st);
+          const div = document.createElement('div');
+          div.innerHTML = html;
+          els.feed.appendChild(div.firstElementChild);
+        }
+      }catch(e){
+        console.error(e);
+        els.error.textContent = e.message || String(e);
+      }
+    }
+
+    function resetAndLoad(){
+      state.accountId = null;
+      state.max_id = null;
+      els.feed.innerHTML = '';
+      loadFeed(false);
+    }
+
+    if (els.instance.value && els.acct.value){
+      resetAndLoad();
+    }
+  </script>
+</body>
+</html>
