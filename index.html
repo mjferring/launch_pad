@@ -403,8 +403,14 @@
       const target = url.searchParams.get('url');
       if (!target) return new Response('Missing url', { status: 400 });
       const r = await fetch(target, { headers: { 'User-Agent': 'Mozilla/5.0' }});
-      const text = await r.text();
-      return new Response(text, { headers: { 'Content-Type': 'application/xml', 'Access-Control-Allow-Origin': '*' } });
+      const contentType = r.headers.get('content-type');
+      const body = await r.text();
+      return new Response(body, {
+        headers: {
+          'Content-Type': contentType || 'application/json',
+          'Access-Control-Allow-Origin': '*'
+        }
+      });
     }
   };
   -->
