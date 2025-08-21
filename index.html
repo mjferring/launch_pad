@@ -9,7 +9,7 @@
     :root { --bg:#0b1220; --card:#121a2b; --text:#dbe3f0; --muted:#9aa7bd; --border:#22304b; --shadow:0 12px 24px rgba(0,0,0,.5); --radius:16px; }
     @media (prefers-color-scheme: light) { :root { --bg:#f6f7fb; --card:#ffffff; --text:#1f2937; --muted:#6b7280; --border:#e5e7eb; --shadow:0 10px 24px rgba(2,8,20,.06);}}
     *{box-sizing:border-box} body{margin:0;font:16px/1.4 system-ui,-apple-system,Segoe UI,Roboto,Noto Sans,Ubuntu,Cantarell,Helvetica Neue,Arial;background:var(--bg);color:var(--text);padding:24px}
-    .container{display:flex;flex-direction:column;gap:18px}
+    .container{max-width:1180px;margin:0 auto;display:grid;gap:18px}
     .main-grid {
       display: grid;
       grid-template-columns: 1fr 2fr;
@@ -20,7 +20,6 @@
       display: flex;
       flex-direction: column;
       gap: 18px;
-      padding-top: 0;
     }
     @media (max-width: 900px) {
       .main-grid {
@@ -29,27 +28,24 @@
       .sidebar {
         flex-direction: row;
         gap: 12px;
-        padding-top: 0;
       }
     }
     header {
       display: flex;
       align-items: center;
-      justify-content: flex-start;
+      justify-content: space-between; /* Pushes h1 left, controls right */
       min-width: 0;
-      padding-bottom: 0;
     }
     h1 {
       margin: 0;
       font-size: 24px;
-      flex-shrink: 0;
-      margin-right: auto;
+      flex-shrink: 0; /* Prevent shrinking */
     }
     .controls {
       display: flex;
       gap: 10px;
-      flex-wrap: nowrap;
-      margin-left: 0;
+      flex-wrap: nowrap; /* Keep button(s) on one line */
+      margin-left: auto; /* Pushes controls to the far right */
     }
     h1, .controls {
       min-width: 0; /* Prevent overflow */
@@ -79,175 +75,10 @@
 </head>
 <body>
   <div class="main-grid">
-<<<<<<< HEAD
-    <!-- RIGHT COLUMN (existing content) -->
-    <div class="container">
-      <header>
-        <h1>Daily Launchpad</h1>
-        <div style="flex:1"></div>
-        <div class="controls">
-          <button id="refreshAll">Refresh All Feeds</button>
-        </div>
-      </header>
-      <section class="card"><div class="section-head"><div class="label"><h2 style="margin:0;font-size:18px">Top News</h2><span class="badge">Latest first</span></div><div class="rss-toolbar"><button class="group-refresh" data-group="Top News">Refresh Group</button></div></div><div class="grid-2">
-        <div id="sec-NYT" class="rss-card">
-          <div class="section-head" style="margin-bottom:6px">
-            <div class="label"><span class="emoji">📰</span><strong>NYT Headlines</strong></div>
-            <div class="rss-toolbar">
-              <button data-feed="NYT">Refresh</button>
-              <span id="status-NYT" class="rss-status">Loading…</span>
-            </div>
-          </div>
-          <div class="rss-wrap"><ul id="list-NYT" class="rss-list" aria-live="polite"></ul></div>
-        </div>
-
-        <div id="sec-BBCWorld" class="rss-card">
-          <div class="section-head" style="margin-bottom:6px">
-            <div class="label"><span class="emoji">🌍</span><strong>BBC World</strong></div>
-            <div class="rss-toolbar">
-              <button data-feed="BBCWorld">Refresh</button>
-              <span id="status-BBCWorld" class="rss-status">Loading…</span>
-            </div>
-          </div>
-          <div class="rss-wrap"><ul id="list-BBCWorld" class="rss-list" aria-live="polite"></ul></div>
-        </div>
-
-        <div id="sec-NPRTop" class="rss-card">
-          <div class="section-head" style="margin-bottom:6px">
-            <div class="label"><span class="emoji">📻</span><strong>NPR Top Stories</strong></div>
-            <div class="rss-toolbar">
-              <button data-feed="NPRTop">Refresh</button>
-              <span id="status-NPRTop" class="rss-status">Loading…</span>
-            </div>
-          </div>
-          <div class="rss-wrap"><ul id="list-NPRTop" class="rss-list" aria-live="polite"></ul></div>
-        </div>
-
-        <div id="sec-wpost" class="rss-card">
-          <div class="section-head" style="margin-bottom:6px">
-            <div class="label"><span class="emoji">🇺🇸</span><strong>Washington Post</strong></div>
-            <div class="rss-toolbar">
-              <button data-feed="wpost">Refresh</button>
-              <span id="status-wpost" class="rss-status">Loading…</span>
-            </div>
-          </div>
-          <div class="rss-wrap"><ul id="list-wpost" class="rss-list" aria-live="polite"></ul></div>
-        </div>
-      </div></section><section class="card"><div class="section-head"><div class="label"><h2 style="margin:0;font-size:18px">Politics</h2><span class="badge">Latest first</span></div><div class="rss-toolbar"><button class="group-refresh" data-group="Politics">Refresh Group</button></div></div><div class="grid-2">
-        <div id="sec-Politico" class="rss-card">
-          <div class="section-head" style="margin-bottom:6px">
-            <div class="label"><span class="emoji">🏛️</span><strong>POLITICO Picks</strong></div>
-            <div class="rss-toolbar">
-              <button data-feed="Politico">Refresh</button>
-              <span id="status-Politico" class="rss-status">Loading…</span>
-            </div>
-          </div>
-          <div class="rss-wrap"><ul id="list-Politico" class="rss-list" aria-live="polite"></ul></div>
-        </div>
-
-        <div id="sec-WaPoPolitics" class="rss-card">
-          <div class="section-head" style="margin-bottom:6px">
-            <div class="label"><span class="emoji">🏛️</span><strong>Washington Post — Politics</strong></div>
-            <div class="rss-toolbar">
-              <button data-feed="WaPoPolitics">Refresh</button>
-              <span id="status-WaPoPolitics" class="rss-status">Loading…</span>
-            </div>
-          </div>
-          <div class="rss-wrap"><ul id="list-WaPoPolitics" class="rss-list" aria-live="polite"></ul></div>
-        </div>
-
-
-      </div></section><section class="card"><div class="section-head"><div class="label"><h2 style="margin:0;font-size:18px">Markets & Business</h2><span class="badge">Latest first</span></div><div class="rss-toolbar"><button class="group-refresh" data-group="Markets & Business">Refresh Group</button></div></div><div class="grid-2">
-        <div id="sec-CNBCMarkets" class="rss-card">
-          <div class="section-head" style="margin-bottom:6px">
-            <div class="label"><span class="emoji">💹</span><strong>CNBC Top News & Analysis</strong></div>
-            <div class="rss-toolbar">
-              <button data-feed="CNBCMarkets">Refresh</button>
-              <span id="status-CNBCMarkets" class="rss-status">Loading…</span>
-            </div>
-          </div>
-          <div class="rss-wrap"><ul id="list-CNBCMarkets" class="rss-list" aria-live="polite"></ul></div>
-        </div>
-
-        <div id="sec-FTWorld" class="rss-card">
-          <div class="section-head" style="margin-bottom:6px">
-            <div class="label"><span class="emoji">💼</span><strong>Financial Times — World</strong></div>
-            <div class="rss-toolbar">
-              <button data-feed="FTWorld">Refresh</button>
-              <span id="status-FTWorld" class="rss-status">Loading…</span>
-            </div>
-          </div>
-          <div class="rss-wrap"><ul id="list-FTWorld" class="rss-list" aria-live="polite"></ul></div>
-        </div>
-      </div></section><section class="card"><div class="section-head"><div class="label"><h2 style="margin:0;font-size:18px">Tech</h2><span class="badge">Latest first</span></div><div class="rss-toolbar"><button class="group-refresh" data-group="Tech">Refresh Group</button></div></div><div class="grid-2">
-        <div id="sec-DF" class="rss-card">
-          <div class="section-head" style="margin-bottom:6px">
-            <div class="label"><span class="emoji">🚀</span><strong>Daring Fireball</strong></div>
-            <div class="rss-toolbar">
-              <button data-feed="DF">Refresh</button>
-              <span id="status-DF" class="rss-status">Loading…</span>
-            </div>
-          </div>
-          <div class="rss-wrap"><ul id="list-DF" class="rss-list" aria-live="polite"></ul></div>
-        </div>
-
-        <div id="sec-Wired" class="rss-card">
-          <div class="section-head" style="margin-bottom:6px">
-            <div class="label"><span class="emoji">🔧</span><strong>WIRED</strong></div>
-            <div class="rss-toolbar">
-              <button data-feed="Wired">Refresh</button>
-              <span id="status-Wired" class="rss-status">Loading…</span>
-            </div>
-          </div>
-          <div class="rss-wrap"><ul id="list-Wired" class="rss-list" aria-live="polite"></ul></div>
-        </div>
-
-
-      </div></section><section class="card"><div class="section-head"><div class="label"><h2 style="margin:0;font-size:18px">Sports</h2><span class="badge">Latest first</span></div><div class="rss-toolbar"><button class="group-refresh" data-group="Sports">Refresh Group</button></div></div><div class="grid-2">
-        <div id="sec-ESPN" class="rss-card">
-          <div class="section-head" style="margin-bottom:6px">
-            <div class="label"><span class="emoji">🏟️</span><strong>ESPN Top Headlines</strong></div>
-            <div class="rss-toolbar">
-              <button data-feed="ESPN">Refresh</button>
-              <span id="status-ESPN" class="rss-status">Loading…</span>
-            </div>
-          </div>
-          <div class="rss-wrap"><ul id="list-ESPN" class="rss-list" aria-live="polite"></ul></div>
-        </div>
-
-
-
-        <div id="sec-BBCSportUK" class="rss-card">
-          <div class="section-head" style="margin-bottom:6px">
-            <div class="label"><span class="emoji">⚽</span><strong>BBC Sport (UK)</strong></div>
-            <div class="rss-toolbar">
-              <button data-feed="BBCSportUK">Refresh</button>
-              <span id="status-BBCSportUK" class="rss-status">Loading…</span>
-            </div>
-          </div>
-          <div class="rss-wrap"><ul id="list-BBCSportUK" class="rss-list" aria-live="polite"></ul></div>
-        </div>
-
-        <div id="sec-Cubs" class="rss-card">
-          <div class="section-head" style="margin-bottom:6px">
-            <div class="label"><span class="emoji">🐻</span><strong>Cubs News</strong></div>
-            <div class="rss-toolbar">
-              <button data-feed="Cubs">Refresh</button>
-              <span id="status-Cubs" class="rss-status">Loading…</span>
-            </div>
-          </div>
-          <div class="rss-wrap"><ul id="list-Cubs" class="rss-list" aria-live="polite"></ul></div>
-        </div>
-      </div></section>
-    </div>
     <!-- LEFT COLUMN -->
-    <aside class="sidebar" style="margin-top:0;">
-=======
-    <!-- LEFT COLUMN: Weather (now aligned with first RSS section) -->
-    <aside class="sidebar" style="padding-top:0;">
->>>>>>> f35a85bdf8e43c1d5bd3c55ac7311772ff9618a9
+    <aside class="sidebar">
       <!-- Weather Section -->
-      <section class="card weather-card" style="margin-top:0;">
+      <section class="card weather-card">
         <div class="section-head">
           <div class="label"><span class="emoji">🌤️</span><strong>Clive, IA Weather</strong></div>
         </div>
@@ -257,169 +88,337 @@
           <span id="weather-desc" style="font-size:16px;color:var(--muted);"></span>
         </div>
       </section>
+      <!-- DJIA Section -->
+      <section class="card djia-card">
+        <div class="section-head">
+          <div class="label"><span class="emoji">💹</span><strong>DJIA</strong></div>
+        </div>
+        <div id="djia" style="display:flex;align-items:center;gap:12px;font-size:22px;min-height:48px;">
+          <span id="djia-value">--</span>
+          <span id="djia-change" style="font-size:16px;"></span>
+        </div>
+      </section>
     </aside>
-<<<<<<< HEAD
-=======
     <!-- RIGHT COLUMN (existing content) -->
     <div class="container">
-      <header style="grid-column:1/-1;padding-bottom:0;">
-        <h1 style="margin-right:auto;">Daily Launchpad</h1>
+      <header>
+        <h1>Daily Launchpad</h1>
+        <div style="flex:1"></div>
         <div class="controls">
           <button id="refreshAll">Refresh All Feeds</button>
         </div>
       </header>
-      <section class="card"><div class="section-head"><div class="label"><h2 style="margin:0;font-size:18px">Top News</h2><span class="badge">Latest first</span></div><div class="rss-toolbar"><button class="group-refresh" data-group="Top News">Refresh Group</button></div></div><div class="grid-2">
-        <div id="sec-NYT" class="rss-card">
-          <div class="section-head" style="margin-bottom:6px">
-            <div class="label"><span class="emoji">📰</span><strong>NYT Headlines</strong></div>
-            <div class="rss-toolbar">
-              <button data-feed="NYT">Refresh</button>
-              <span id="status-NYT" class="rss-status">Loading…</span>
-            </div>
+<section class="card"><div class="section-head"><div class="label"><h2 style="margin:0;font-size:18px">Top News</h2><span class="badge">Latest first</span></div><div class="rss-toolbar"><button class="group-refresh" data-group="Top News">Refresh Group</button></div></div><div class="grid-2">
+      <div id="sec-NYT" class="rss-card">
+        <div class="section-head" style="margin-bottom:6px">
+          <div class="label"><span class="emoji">📰</span><strong>NYT Headlines</strong></div>
+          <div class="rss-toolbar">
+            <button data-feed="NYT">Refresh</button>
+            <span id="status-NYT" class="rss-status">Loading…</span>
           </div>
-          <div class="rss-wrap"><ul id="list-NYT" class="rss-list" aria-live="polite"></ul></div>
         </div>
+        <div class="rss-wrap"><ul id="list-NYT" class="rss-list" aria-live="polite"></ul></div>
+      </div>
 
-        <div id="sec-BBCWorld" class="rss-card">
-          <div class="section-head" style="margin-bottom:6px">
-            <div class="label"><span class="emoji">🌍</span><strong>BBC World</strong></div>
-            <div class="rss-toolbar">
-              <button data-feed="BBCWorld">Refresh</button>
-              <span id="status-BBCWorld" class="rss-status">Loading…</span>
-            </div>
+      <div id="sec-BBCWorld" class="rss-card">
+        <div class="section-head" style="margin-bottom:6px">
+          <div class="label"><span class="emoji">🌍</span><strong>BBC World</strong></div>
+          <div class="rss-toolbar">
+            <button data-feed="BBCWorld">Refresh</button>
+            <span id="status-BBCWorld" class="rss-status">Loading…</span>
           </div>
-          <div class="rss-wrap"><ul id="list-BBCWorld" class="rss-list" aria-live="polite"></ul></div>
         </div>
+        <div class="rss-wrap"><ul id="list-BBCWorld" class="rss-list" aria-live="polite"></ul></div>
+      </div>
 
-        <div id="sec-NPRTop" class="rss-card">
-          <div class="section-head" style="margin-bottom:6px">
-            <div class="label"><span class="emoji">📻</span><strong>NPR Top Stories</strong></div>
-            <div class="rss-toolbar">
-              <button data-feed="NPRTop">Refresh</button>
-              <span id="status-NPRTop" class="rss-status">Loading…</span>
-            </div>
+      <div id="sec-NPRTop" class="rss-card">
+        <div class="section-head" style="margin-bottom:6px">
+          <div class="label"><span class="emoji">📻</span><strong>NPR Top Stories</strong></div>
+          <div class="rss-toolbar">
+            <button data-feed="NPRTop">Refresh</button>
+            <span id="status-NPRTop" class="rss-status">Loading…</span>
           </div>
-          <div class="rss-wrap"><ul id="list-NPRTop" class="rss-list" aria-live="polite"></ul></div>
         </div>
+        <div class="rss-wrap"><ul id="list-NPRTop" class="rss-list" aria-live="polite"></ul></div>
+      </div>
 
-        <div id="sec-wpost" class="rss-card">
-          <div class="section-head" style="margin-bottom:6px">
-            <div class="label"><span class="emoji">🇺🇸</span><strong>Washington Post</strong></div>
-            <div class="rss-toolbar">
-              <button data-feed="wpost">Refresh</button>
-              <span id="status-wpost" class="rss-status">Loading…</span>
-            </div>
+      <div id="sec-wpost" class="rss-card">
+        <div class="section-head" style="margin-bottom:6px">
+          <div class="label"><span class="emoji">🇺🇸</span><strong>Washington Post</strong></div>
+          <div class="rss-toolbar">
+            <button data-feed="wpost">Refresh</button>
+            <span id="status-wpost" class="rss-status">Loading…</span>
           </div>
-          <div class="rss-wrap"><ul id="list-wpost" class="rss-list" aria-live="polite"></ul></div>
         </div>
-      </div></section><section class="card"><div class="section-head"><div class="label"><h2 style="margin:0;font-size:18px">Politics</h2><span class="badge">Latest first</span></div><div class="rss-toolbar"><button class="group-refresh" data-group="Politics">Refresh Group</button></div></div><div class="grid-2">
-        <div id="sec-Politico" class="rss-card">
-          <div class="section-head" style="margin-bottom:6px">
-            <div class="label"><span class="emoji">🏛️</span><strong>POLITICO Picks</strong></div>
-            <div class="rss-toolbar">
-              <button data-feed="Politico">Refresh</button>
-              <span id="status-Politico" class="rss-status">Loading…</span>
-            </div>
+        <div class="rss-wrap"><ul id="list-wpost" class="rss-list" aria-live="polite"></ul></div>
+      </div>
+</div></section><section class="card"><div class="section-head"><div class="label"><h2 style="margin:0;font-size:18px">Politics</h2><span class="badge">Latest first</span></div><div class="rss-toolbar"><button class="group-refresh" data-group="Politics">Refresh Group</button></div></div><div class="grid-2">
+      <div id="sec-Politico" class="rss-card">
+        <div class="section-head" style="margin-bottom:6px">
+          <div class="label"><span class="emoji">🏛️</span><strong>POLITICO Picks</strong></div>
+          <div class="rss-toolbar">
+            <button data-feed="Politico">Refresh</button>
+            <span id="status-Politico" class="rss-status">Loading…</span>
           </div>
-          <div class="rss-wrap"><ul id="list-Politico" class="rss-list" aria-live="polite"></ul></div>
         </div>
+        <div class="rss-wrap"><ul id="list-Politico" class="rss-list" aria-live="polite"></ul></div>
+      </div>
 
-        <div id="sec-WaPoPolitics" class="rss-card">
-          <div class="section-head" style="margin-bottom:6px">
-            <div class="label"><span class="emoji">🏛️</span><strong>Washington Post — Politics</strong></div>
-            <div class="rss-toolbar">
-              <button data-feed="WaPoPolitics">Refresh</button>
-              <span id="status-WaPoPolitics" class="rss-status">Loading…</span>
-            </div>
+      <div id="sec-WaPoPolitics" class="rss-card">
+        <div class="section-head" style="margin-bottom:6px">
+          <div class="label"><span class="emoji">🏛️</span><strong>Washington Post — Politics</strong></div>
+          <div class="rss-toolbar">
+            <button data-feed="WaPoPolitics">Refresh</button>
+            <span id="status-WaPoPolitics" class="rss-status">Loading…</span>
           </div>
-          <div class="rss-wrap"><ul id="list-WaPoPolitics" class="rss-list" aria-live="polite"></ul></div>
         </div>
+        <div class="rss-wrap"><ul id="list-WaPoPolitics" class="rss-list" aria-live="polite"></ul></div>
+      </div>
 
 
-      </div></section><section class="card"><div class="section-head"><div class="label"><h2 style="margin:0;font-size:18px">Markets & Business</h2><span class="badge">Latest first</span></div><div class="rss-toolbar"><button class="group-refresh" data-group="Markets & Business">Refresh Group</button></div></div><div class="grid-2">
-        <div id="sec-CNBCMarkets" class="rss-card">
-          <div class="section-head" style="margin-bottom:6px">
-            <div class="label"><span class="emoji">💹</span><strong>CNBC Top News & Analysis</strong></div>
-            <div class="rss-toolbar">
-              <button data-feed="CNBCMarkets">Refresh</button>
-              <span id="status-CNBCMarkets" class="rss-status">Loading…</span>
-            </div>
+</div></section><section class="card"><div class="section-head"><div class="label"><h2 style="margin:0;font-size:18px">Markets & Business</h2><span class="badge">Latest first</span></div><div class="rss-toolbar"><button class="group-refresh" data-group="Markets & Business">Refresh Group</button></div></div><div class="grid-2">
+      <div id="sec-CNBCMarkets" class="rss-card">
+        <div class="section-head" style="margin-bottom:6px">
+          <div class="label"><span class="emoji">💹</span><strong>CNBC Top News & Analysis</strong></div>
+          <div class="rss-toolbar">
+            <button data-feed="CNBCMarkets">Refresh</button>
+            <span id="status-CNBCMarkets" class="rss-status">Loading…</span>
           </div>
-          <div class="rss-wrap"><ul id="list-CNBCMarkets" class="rss-list" aria-live="polite"></ul></div>
         </div>
+        <div class="rss-wrap"><ul id="list-CNBCMarkets" class="rss-list" aria-live="polite"></ul></div>
+      </div>
 
-        <div id="sec-FTWorld" class="rss-card">
-          <div class="section-head" style="margin-bottom:6px">
-            <div class="label"><span class="emoji">💼</span><strong>Financial Times — World</strong></div>
-            <div class="rss-toolbar">
-              <button data-feed="FTWorld">Refresh</button>
-              <span id="status-FTWorld" class="rss-status">Loading…</span>
-            </div>
+      <div id="sec-FTWorld" class="rss-card">
+        <div class="section-head" style="margin-bottom:6px">
+          <div class="label"><span class="emoji">💼</span><strong>Financial Times — World</strong></div>
+          <div class="rss-toolbar">
+            <button data-feed="FTWorld">Refresh</button>
+            <span id="status-FTWorld" class="rss-status">Loading…</span>
           </div>
-          <div class="rss-wrap"><ul id="list-FTWorld" class="rss-list" aria-live="polite"></ul></div>
         </div>
-      </div></section><section class="card"><div class="section-head"><div class="label"><h2 style="margin:0;font-size:18px">Tech</h2><span class="badge">Latest first</span></div><div class="rss-toolbar"><button class="group-refresh" data-group="Tech">Refresh Group</button></div></div><div class="grid-2">
-        <div id="sec-DF" class="rss-card">
-          <div class="section-head" style="margin-bottom:6px">
-            <div class="label"><span class="emoji">🚀</span><strong>Daring Fireball</strong></div>
-            <div class="rss-toolbar">
-              <button data-feed="DF">Refresh</button>
-              <span id="status-DF" class="rss-status">Loading…</span>
-            </div>
+        <div class="rss-wrap"><ul id="list-FTWorld" class="rss-list" aria-live="polite"></ul></div>
+      </div>
+</div></section><section class="card"><div class="section-head"><div class="label"><h2 style="margin:0;font-size:18px">Tech</h2><span class="badge">Latest first</span></div><div class="rss-toolbar"><button class="group-refresh" data-group="Tech">Refresh Group</button></div></div><div class="grid-2">
+      <div id="sec-DF" class="rss-card">
+        <div class="section-head" style="margin-bottom:6px">
+          <div class="label"><span class="emoji">🚀</span><strong>Daring Fireball</strong></div>
+          <div class="rss-toolbar">
+            <button data-feed="DF">Refresh</button>
+            <span id="status-DF" class="rss-status">Loading…</span>
           </div>
-          <div class="rss-wrap"><ul id="list-DF" class="rss-list" aria-live="polite"></ul></div>
         </div>
+        <div class="rss-wrap"><ul id="list-DF" class="rss-list" aria-live="polite"></ul></div>
+      </div>
 
-        <div id="sec-Wired" class="rss-card">
-          <div class="section-head" style="margin-bottom:6px">
-            <div class="label"><span class="emoji">🔧</span><strong>WIRED</strong></div>
-            <div class="rss-toolbar">
-              <button data-feed="Wired">Refresh</button>
-              <span id="status-Wired" class="rss-status">Loading…</span>
-            </div>
+      <div id="sec-Wired" class="rss-card">
+        <div class="section-head" style="margin-bottom:6px">
+          <div class="label"><span class="emoji">🔧</span><strong>WIRED</strong></div>
+          <div class="rss-toolbar">
+            <button data-feed="Wired">Refresh</button>
+            <span id="status-Wired" class="rss-status">Loading…</span>
           </div>
-          <div class="rss-wrap"><ul id="list-Wired" class="rss-list" aria-live="polite"></ul></div>
         </div>
+        <div class="rss-wrap"><ul id="list-Wired" class="rss-list" aria-live="polite"></ul></div>
+      </div>
 
 
-      </div></section><section class="card"><div class="section-head"><div class="label"><h2 style="margin:0;font-size:18px">Sports</h2><span class="badge">Latest first</span></div><div class="rss-toolbar"><button class="group-refresh" data-group="Sports">Refresh Group</button></div></div><div class="grid-2">
-        <div id="sec-ESPN" class="rss-card">
-          <div class="section-head" style="margin-bottom:6px">
-            <div class="label"><span class="emoji">🏟️</span><strong>ESPN Top Headlines</strong></div>
-            <div class="rss-toolbar">
-              <button data-feed="ESPN">Refresh</button>
-              <span id="status-ESPN" class="rss-status">Loading…</span>
-            </div>
+</div></section><section class="card"><div class="section-head"><div class="label"><h2 style="margin:0;font-size:18px">Sports</h2><span class="badge">Latest first</span></div><div class="rss-toolbar"><button class="group-refresh" data-group="Sports">Refresh Group</button></div></div><div class="grid-2">
+      <div id="sec-ESPN" class="rss-card">
+        <div class="section-head" style="margin-bottom:6px">
+          <div class="label"><span class="emoji">🏟️</span><strong>ESPN Top Headlines</strong></div>
+          <div class="rss-toolbar">
+            <button data-feed="ESPN">Refresh</button>
+            <span id="status-ESPN" class="rss-status">Loading…</span>
           </div>
-          <div class="rss-wrap"><ul id="list-ESPN" class="rss-list" aria-live="polite"></ul></div>
         </div>
+        <div class="rss-wrap"><ul id="list-ESPN" class="rss-list" aria-live="polite"></ul></div>
+      </div>
 
 
 
-        <div id="sec-BBCSportUK" class="rss-card">
-          <div class="section-head" style="margin-bottom:6px">
-            <div class="label"><span class="emoji">⚽</span><strong>BBC Sport (UK)</strong></div>
-            <div class="rss-toolbar">
-              <button data-feed="BBCSportUK">Refresh</button>
-              <span id="status-BBCSportUK" class="rss-status">Loading…</span>
-            </div>
+      <div id="sec-BBCSportUK" class="rss-card">
+        <div class="section-head" style="margin-bottom:6px">
+          <div class="label"><span class="emoji">⚽</span><strong>BBC Sport (UK)</strong></div>
+          <div class="rss-toolbar">
+            <button data-feed="BBCSportUK">Refresh</button>
+            <span id="status-BBCSportUK" class="rss-status">Loading…</span>
           </div>
-          <div class="rss-wrap"><ul id="list-BBCSportUK" class="rss-list" aria-live="polite"></ul></div>
         </div>
+        <div class="rss-wrap"><ul id="list-BBCSportUK" class="rss-list" aria-live="polite"></ul></div>
+      </div>
 
-        <div id="sec-Cubs" class="rss-card">
-          <div class="section-head" style="margin-bottom:6px">
-            <div class="label"><span class="emoji">🐻</span><strong>Cubs News</strong></div>
-            <div class="rss-toolbar">
-              <button data-feed="Cubs">Refresh</button>
-              <span id="status-Cubs" class="rss-status">Loading…</span>
-            </div>
+      <div id="sec-Cubs" class="rss-card">
+        <div class="section-head" style="margin-bottom:6px">
+          <div class="label"><span class="emoji">🐻</span><strong>Cubs News</strong></div>
+          <div class="rss-toolbar">
+            <button data-feed="Cubs">Refresh</button>
+            <span id="status-Cubs" class="rss-status">Loading…</span>
           </div>
-          <div class="rss-wrap"><ul id="list-Cubs" class="rss-list" aria-live="polite"></ul></div>
         </div>
-      </div></section>
-    </div>
->>>>>>> f35a85bdf8e43c1d5bd3c55ac7311772ff9618a9
+        <div class="rss-wrap"><ul id="list-Cubs" class="rss-list" aria-live="polite"></ul></div>
+      </div>
+</div></section>
+ </div>
   </div>
+
+  <script>
+    // WEATHER: Open-Meteo API for Clive, IA (41.6033, -93.8316)
+    async function fetchWeather() {
+      const weatherIconMap = {
+        0: "☀️", 1: "🌤️", 2: "⛅", 3: "☁️", 45: "🌫️", 48: "🌫️",
+        51: "🌦️", 53: "🌦️", 55: "🌦️", 56: "🌧️", 57: "🌧️",
+        61: "🌦️", 63: "🌧️", 65: "🌧️", 66: "🌧️", 67: "🌧️",
+        71: "🌨️", 73: "🌨️", 75: "❄️", 77: "❄️", 80: "🌦️",
+        81: "🌧️", 82: "🌧️", 85: "🌨️", 86: "🌨️", 95: "⛈️",
+        96: "⛈️", 99: "⛈️"
+      };
+      const weatherDescMap = {
+        0: "Clear", 1: "Mainly clear", 2: "Partly cloudy", 3: "Overcast",
+        45: "Fog", 48: "Depositing rime fog",
+        51: "Light drizzle", 53: "Drizzle", 55: "Dense drizzle",
+        56: "Freezing drizzle", 57: "Freezing drizzle",
+        61: "Slight rain", 63: "Rain", 65: "Heavy rain",
+        66: "Freezing rain", 67: "Freezing rain",
+        71: "Slight snow", 73: "Snow", 75: "Heavy snow",
+        77: "Snow grains", 80: "Slight showers", 81: "Showers",
+        82: "Violent showers", 85: "Slight snow showers", 86: "Heavy snow showers",
+        95: "Thunderstorm", 96: "Thunderstorm + hail", 99: "Thunderstorm + hail"
+      };
+      try {
+        const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=41.6033&longitude=-93.8316&current_weather=true&temperature_unit=fahrenheit');
+        const data = await res.json();
+        const temp = Math.round(data.current_weather.temperature);
+        const code = data.current_weather.weathercode;
+        document.getElementById('weather-temp').textContent = temp + "°";
+        document.getElementById('weather-icon').textContent = weatherIconMap[code] || "❓";
+        document.getElementById('weather-desc').textContent = weatherDescMap[code] || "";
+      } catch {
+        document.getElementById('weather-temp').textContent = "--°";
+        document.getElementById('weather-icon').textContent = "⚠️";
+        document.getElementById('weather-desc').textContent = "Weather unavailable";
+      }
+    }
+    fetchWeather();
+    setInterval(fetchWeather, 10 * 60 * 1000);
+
+    // DJIA: Yahoo Finance API
+    async function fetchDJIA() {
+      try {
+        const res = await fetch('https://query1.finance.yahoo.com/v7/finance/quote?symbols=%5EDJI');
+        const data = await res.json();
+        const quote = data.quoteResponse.result[0];
+        const value = quote.regularMarketPrice.toLocaleString();
+        const change = quote.regularMarketChange;
+        const percent = quote.regularMarketChangePercent;
+        const changeStr = `${change > 0 ? "▲" : change < 0 ? "▼" : ""} ${change.toFixed(2)} (${percent.toFixed(2)}%)`;
+        document.getElementById('djia-value').textContent = value;
+        document.getElementById('djia-change').textContent = changeStr;
+        document.getElementById('djia-change').style.color = change > 0 ? "#2ecc40" : change < 0 ? "#ff4136" : "inherit";
+      } catch {
+        document.getElementById('djia-value').textContent = "--";
+        document.getElementById('djia-change').textContent = "Unavailable";
+        document.getElementById('djia-change').style.color = "inherit";
+      }
+    }
+    fetchDJIA();
+    setInterval(fetchDJIA, 5 * 60 * 1000);
+
+    const FEEDS = {
+      "NYT": "https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml",
+      "ReutersTop": "https://feeds.reuters.com/reuters/topNews",
+      "APTop": "https://feeds.apnews.com/ap/topnews",
+      "BBCWorld": "https://feeds.bbci.co.uk/news/world/rss.xml",
+      "NPRTop": "https://feeds.npr.org/1001/rss.xml",
+      "Politico": "https://www.politico.com/rss/politicopicks.xml",
+      "WaPoPolitics": "https://feeds.washingtonpost.com/rss/politics",
+      "wpost": "https://feeds.washingtonpost.com/rss/national",
+      "WSJMarkets": "https://feeds.a.dj.com/rss/RSSMarketsMain.xml",
+      "CNBCMarkets": "https://www.cnbc.com/id/100003114/device/rss/rss.html",
+      "FTWorld": "https://www.ft.com/rss/world",
+      "DF": "https://daringfireball.net/feeds/main",
+      "Wired": "https://www.wired.com/feed/rss",
+      "TheVerge": "https://www.theverge.com/rss/index.xml",
+      "ESPN": "https://www.espn.com/espn/rss/news",
+      "BR": "https://feeds.feedburner.com/bleacherreport/dFpM",
+      "BBCSportUK": "https://feeds.bbci.co.uk/sport/rss.xml?edition=uk",
+      "Cubs": "https://www.mlb.com/cubs/feeds/news/rss.xml",
+    };
+    let PROXY = "https://silent-sunset-890f.kpdfvg7cd7.workers.dev/workers.dev/?url=";
+    const store = {};
+
+    function fmtDate(ts){
+      try { return new Date(ts).toLocaleString([], {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'}); }
+      catch { return ''; }
+    }
+    function normalizeId(node){
+      const guid = node.querySelector('guid')?.textContent?.trim();
+      const link = node.querySelector('link')?.textContent?.trim();
+      const title = node.querySelector('title')?.textContent?.trim();
+      const pubDate = node.querySelector('pubDate')?.textContent?.trim();
+      return guid || link || (title + '|' + pubDate);
+    }
+    function toItem(node){
+      const title = node.querySelector('title')?.textContent?.trim() ?? 'Untitled';
+      const link = node.querySelector('link')?.textContent?.trim() ?? '#';
+      const pubDate = node.querySelector('pubDate')?.textContent?.trim() ?? '';
+      const ts = Date.parse(pubDate || '') || Date.now();
+      return { id: normalizeId(node), title, link, ts };
+    }
+    function render(key){
+      const list = document.getElementById('list-' + key);
+      const items = (store[key] || []).slice().sort((a,b)=>b.ts - a.ts);
+      list.innerHTML = '';
+      for(const it of items){
+        const li = document.createElement('li'); li.className = 'rss-item';
+        const a = document.createElement('a'); a.href = it.link; a.target = '_blank'; a.rel = 'noopener noreferrer'; a.textContent = it.title;
+        const t = document.createElement('time'); t.textContent = fmtDate(it.ts);
+        li.appendChild(a); li.appendChild(t);
+        list.appendChild(li);
+      }
+    }
+    async function loadFeed(key){
+      const status = document.getElementById('status-' + key);
+      if (status) status.textContent = 'Loading…';
+      try {
+        const res = await fetch(PROXY + encodeURIComponent(FEEDS[key]));
+        if(!res.ok) throw new Error('Network ' + res.status);
+        const xml = await res.text();
+        const doc = new DOMParser().parseFromString(xml, 'text/xml');
+        const nodes = Array.from(doc.querySelectorAll('item'));
+        const fresh = nodes.map(toItem);
+        store[key] = fresh; // Replace with only the latest items
+        render(key);
+        if (status) status.textContent = 'Updated ' + new Date().toLocaleTimeString();
+      } catch (e){
+        console.error(key, e);
+        if (status) status.textContent = 'Could not load';
+      }
+    }
+    document.querySelectorAll('button[data-feed]').forEach(btn => btn.addEventListener('click', () => loadFeed(btn.dataset.feed)));
+    document.getElementById('refreshAll').addEventListener('click', () => { for(const key in FEEDS){ loadFeed(key); } });
+    document.querySelectorAll('.group-refresh').forEach(btn => {
+      btn.addEventListener('click', () => {
+        btn.closest('section').querySelectorAll('button[data-feed]').forEach(b => loadFeed(b.dataset.feed));
+      });
+    });
+    for(const key in FEEDS){ loadFeed(key); }
+    setInterval(() => { for(const key in FEEDS){ loadFeed(key); } }, 1 * 60 * 1000);
+
+    // Optional: use your own Cloudflare Worker proxy for reliability:
+    // PROXY = "https://<your-worker-subdomain>.workers.dev/?url=";
+  </script>
+
+  <!-- Cloudflare Worker proxy template:
+  export default {
+    async fetch(request) {
+      const url = new URL(request.url);
+      const target = url.searchParams.get('url');
+      if (!target) return new Response('Missing url', { status: 400 });
+      const r = await fetch(target, { headers: { 'User-Agent': 'Mozilla/5.0' }});
+      const text = await r.text();
+      return new Response(text, { headers: { 'Content-Type': 'application/xml', 'Access-Control-Allow-Origin': '*' } });
+    }
+  };
+  -->
 </body>
 </html>
