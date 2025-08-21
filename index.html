@@ -10,6 +10,26 @@
     @media (prefers-color-scheme: light) { :root { --bg:#f6f7fb; --card:#ffffff; --text:#1f2937; --muted:#6b7280; --border:#e5e7eb; --shadow:0 10px 24px rgba(2,8,20,.06);}}
     *{box-sizing:border-box} body{margin:0;font:16px/1.4 system-ui,-apple-system,Segoe UI,Roboto,Noto Sans,Ubuntu,Cantarell,Helvetica Neue,Arial;background:var(--bg);color:var(--text);padding:24px}
     .container{max-width:1180px;margin:0 auto;display:grid;gap:18px}
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 24px;
+      align-items: start;
+    }
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    @media (max-width: 900px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+      .sidebar {
+        flex-direction: row;
+        gap: 12px;
+      }
+    }
     header {
       display: flex;
       align-items: center;
@@ -54,14 +74,40 @@
   </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <h1>Daily Launchpad</h1>
-      <div style="flex:1"></div>
-      <div class="controls">
-        <button id="refreshAll">Refresh All Feeds</button>
-      </div>
-    </header>
+  <div class="main-grid">
+    <!-- LEFT COLUMN -->
+    <aside class="sidebar">
+      <!-- Weather Section -->
+      <section class="card weather-card">
+        <div class="section-head">
+          <div class="label"><span class="emoji">🌤️</span><strong>Clive, IA Weather</strong></div>
+        </div>
+        <div id="weather" style="display:flex;align-items:center;gap:12px;font-size:22px;min-height:48px;">
+          <span id="weather-temp">--°</span>
+          <span id="weather-icon" style="font-size:32px;">⏳</span>
+          <span id="weather-desc" style="font-size:16px;color:var(--muted);"></span>
+        </div>
+      </section>
+      <!-- DJIA Section -->
+      <section class="card djia-card">
+        <div class="section-head">
+          <div class="label"><span class="emoji">💹</span><strong>DJIA</strong></div>
+        </div>
+        <div id="djia" style="display:flex;align-items:center;gap:12px;font-size:22px;min-height:48px;">
+          <span id="djia-value">--</span>
+          <span id="djia-change" style="font-size:16px;"></span>
+        </div>
+      </section>
+    </aside>
+    <!-- RIGHT COLUMN (existing content) -->
+    <div class="container">
+      <header>
+        <h1>Daily Launchpad</h1>
+        <div style="flex:1"></div>
+        <div class="controls">
+          <button id="refreshAll">Refresh All Feeds</button>
+        </div>
+      </header>
 <section class="card"><div class="section-head"><div class="label"><h2 style="margin:0;font-size:18px">Top News</h2><span class="badge">Latest first</span></div><div class="rss-toolbar"><button class="group-refresh" data-group="Top News">Refresh Group</button></div></div><div class="grid-2">
       <div id="sec-NYT" class="rss-card">
         <div class="section-head" style="margin-bottom:6px">
@@ -213,8 +259,70 @@
       </div>
 </div></section>
  </div>
+  </div>
 
   <script>
+    // WEATHER: Open-Meteo API for Clive, IA (41.6033, -93.8316)
+    async function fetchWeather() {
+      const weatherIconMap = {
+        0: "☀️", 1: "🌤️", 2: "⛅", 3: "☁️", 45: "🌫️", 48: "🌫️",
+        51: "🌦️", 53: "🌦️", 55: "🌦️", 56: "🌧️", 57: "🌧️",
+        61: "🌦️", 63: "🌧️", 65: "🌧️", 66: "🌧️", 67: "🌧️",
+        71: "🌨️", 73: "🌨️", 75: "❄️", 77: "❄️", 80: "🌦️",
+        81: "🌧️", 82: "🌧️", 85: "🌨️", 86: "🌨️", 95: "⛈️",
+        96: "⛈️", 99: "⛈️"
+      };
+      const weatherDescMap = {
+        0: "Clear", 1: "Mainly clear", 2: "Partly cloudy", 3: "Overcast",
+        45: "Fog", 48: "Depositing rime fog",
+        51: "Light drizzle", 53: "Drizzle", 55: "Dense drizzle",
+        56: "Freezing drizzle", 57: "Freezing drizzle",
+        61: "Slight rain", 63: "Rain", 65: "Heavy rain",
+        66: "Freezing rain", 67: "Freezing rain",
+        71: "Slight snow", 73: "Snow", 75: "Heavy snow",
+        77: "Snow grains", 80: "Slight showers", 81: "Showers",
+        82: "Violent showers", 85: "Slight snow showers", 86: "Heavy snow showers",
+        95: "Thunderstorm", 96: "Thunderstorm + hail", 99: "Thunderstorm + hail"
+      };
+      try {
+        const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=41.6033&longitude=-93.8316&current_weather=true&temperature_unit=fahrenheit');
+        const data = await res.json();
+        const temp = Math.round(data.current_weather.temperature);
+        const code = data.current_weather.weathercode;
+        document.getElementById('weather-temp').textContent = temp + "°";
+        document.getElementById('weather-icon').textContent = weatherIconMap[code] || "❓";
+        document.getElementById('weather-desc').textContent = weatherDescMap[code] || "";
+      } catch {
+        document.getElementById('weather-temp').textContent = "--°";
+        document.getElementById('weather-icon').textContent = "⚠️";
+        document.getElementById('weather-desc').textContent = "Weather unavailable";
+      }
+    }
+    fetchWeather();
+    setInterval(fetchWeather, 10 * 60 * 1000);
+
+    // DJIA: Yahoo Finance API
+    async function fetchDJIA() {
+      try {
+        const res = await fetch('https://query1.finance.yahoo.com/v7/finance/quote?symbols=%5EDJI');
+        const data = await res.json();
+        const quote = data.quoteResponse.result[0];
+        const value = quote.regularMarketPrice.toLocaleString();
+        const change = quote.regularMarketChange;
+        const percent = quote.regularMarketChangePercent;
+        const changeStr = `${change > 0 ? "▲" : change < 0 ? "▼" : ""} ${change.toFixed(2)} (${percent.toFixed(2)}%)`;
+        document.getElementById('djia-value').textContent = value;
+        document.getElementById('djia-change').textContent = changeStr;
+        document.getElementById('djia-change').style.color = change > 0 ? "#2ecc40" : change < 0 ? "#ff4136" : "inherit";
+      } catch {
+        document.getElementById('djia-value').textContent = "--";
+        document.getElementById('djia-change').textContent = "Unavailable";
+        document.getElementById('djia-change').style.color = "inherit";
+      }
+    }
+    fetchDJIA();
+    setInterval(fetchDJIA, 5 * 60 * 1000);
+
     const FEEDS = {
       "NYT": "https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml",
       "ReutersTop": "https://feeds.reuters.com/reuters/topNews",
