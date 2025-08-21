@@ -398,41 +398,20 @@
     async function fetchNLStandings() {
       const container = document.getElementById('mlb-nlcentral');
       try {
-        const res = await fetch('https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/standings?region=us&lang=en&contentorigin=espn');
+        // National League Central is divisionId 205 (leagueId 103 is NL)
+        const res = await fetch('https://statsapi.mlb.com/api/v1/standings?leagueId=103&season=2024&standingsTypes=regularSeason');
         const data = await res.json();
-
-        // Recursively search for a division named "Central" in the National League
-        function findNLCentral(node) {
-          if (!node) return null;
+        // Find NL Central division
+        let nlCentral = null;
+        for (const record of data.records) {
           if (
-            (node.name && node.name.toLowerCase().includes('national league')) ||
-            (node.abbreviation && node.abbreviation === 'NL')
+            record.division &&
+            (record.division.name === "National League Central" || record.division.id === 205)
           ) {
-            // Search children for "Central"
-            if (node.children) {
-              for (const div of node.children) {
-                if (
-                  (div.name && div.name.toLowerCase().includes('central')) ||
-                  (div.abbreviation && div.abbreviation === 'NL-C')
-                ) {
-                  return div.standings?.entries || null;
-                }
-                // Recursively search deeper
-                const found = findNLCentral(div);
-                if (found) return found;
-              }
-            }
-          } else if (node.children) {
-            for (const child of node.children) {
-              const found = findNLCentral(child);
-              if (found) return found;
-            }
+            nlCentral = record.teamRecords;
+            break;
           }
-          return null;
         }
-
-        const nlCentral = findNLCentral(data);
-
         if (!nlCentral || !Array.isArray(nlCentral) || nlCentral.length === 0)
           throw new Error("Could not find NL Central standings.");
 
@@ -446,14 +425,12 @@
             <th>GB</th>
           </tr></thead><tbody>`;
         for (const entry of nlCentral) {
-          const t = entry.team;
-          const stats = entry.stats.reduce((acc, s) => { acc[s.name] = s.value; return acc; }, {});
           html += `<tr>
-            <td style="padding-right:6px;">${t.shortDisplayName || t.displayName}</td>
-            <td>${stats.wins ?? '-'}</td>
-            <td>${stats.losses ?? '-'}</td>
-            <td>${stats.winPercent ? (stats.winPercent * 100).toFixed(1) : '-'}</td>
-            <td>${stats.gamesBehind ?? '-'}</td>
+            <td style="padding-right:6px;">${entry.team.name}</td>
+            <td>${entry.wins}</td>
+            <td>${entry.losses}</td>
+            <td>${entry.leagueRecord.pct}</td>
+            <td>${entry.gamesBack === "-" ? "—" : entry.gamesBack}</td>
           </tr>`;
         }
         html += `</tbody></table>`;
