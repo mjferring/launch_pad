@@ -400,20 +400,36 @@
       try {
         const res = await fetch('https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/standings?region=us&lang=en&contentorigin=espn');
         const data = await res.json();
-        // Find NL Central
+
+        // Find the NL Central division in the new ESPN structure
         let nlCentral = null;
         for (const conf of data.children || []) {
           if (conf.name && conf.name.includes('National League')) {
             for (const div of conf.children || []) {
               if (div.name && div.name.includes('Central')) {
-                nlCentral = div.standings.entries;
+                nlCentral = div.standings?.entries;
                 break;
               }
             }
           }
           if (nlCentral) break;
         }
-        if (!nlCentral) throw new Error("Could not find NL Central standings.");
+
+        // Fallback: try to find by division abbreviation if above fails
+        if (!nlCentral && data.children) {
+          for (const conf of data.children) {
+            for (const div of conf.children || []) {
+              if (div.abbreviation === "NL-C") {
+                nlCentral = div.standings?.entries;
+                break;
+              }
+            }
+            if (nlCentral) break;
+          }
+        }
+
+        if (!nlCentral || !Array.isArray(nlCentral) || nlCentral.length === 0) throw new Error("Could not find NL Central standings.");
+
         // Build table
         let html = `<table style="width:100%;font-size:14px;border-collapse:collapse;">
           <thead><tr>
