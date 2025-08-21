@@ -90,14 +90,13 @@
           <span id="weather-desc" style="font-size:16px;color:var(--muted);"></span>
         </div>
       </section>
-      <!-- DJIA Section -->
-      <section class="card djia-card">
+      <!-- MLB NL Central Standings Section -->
+      <section class="card mlb-nlcentral-card">
         <div class="section-head">
-          <div class="label"><span class="emoji">💹</span><strong>DJIA</strong></div>
+          <div class="label"><span class="emoji">⚾</span><strong>NL Central Standings</strong></div>
         </div>
-        <div id="djia" style="display:flex;align-items:center;gap:12px;font-size:22px;min-height:48px;">
-          <span id="djia-value">--</span>
-          <span id="djia-change" style="font-size:16px;"></span>
+        <div id="mlb-nlcentral" style="font-size:15px;min-height:48px;">
+          Loading…
         </div>
       </section>
     </aside>
@@ -394,6 +393,55 @@
 
     // Optional: use your own Cloudflare Worker proxy for reliability:
     // PROXY = "https://<your-worker-subdomain>.workers.dev/?url=";
+
+    // MLB NL Central Standings (uses ESPN public API)
+    async function fetchNLStandings() {
+      const container = document.getElementById('mlb-nlcentral');
+      try {
+        const res = await fetch('https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/standings?region=us&lang=en&contentorigin=espn');
+        const data = await res.json();
+        // Find NL Central
+        let nlCentral = null;
+        for (const conf of data.children || []) {
+          if (conf.name && conf.name.includes('National League')) {
+            for (const div of conf.children || []) {
+              if (div.name && div.name.includes('Central')) {
+                nlCentral = div.standings.entries;
+                break;
+              }
+            }
+          }
+          if (nlCentral) break;
+        }
+        if (!nlCentral) throw new Error("Could not find NL Central standings.");
+        // Build table
+        let html = `<table style="width:100%;font-size:14px;border-collapse:collapse;">
+          <thead><tr>
+            <th style="text-align:left;">Team</th>
+            <th>W</th>
+            <th>L</th>
+            <th>Pct</th>
+            <th>GB</th>
+          </tr></thead><tbody>`;
+        for (const entry of nlCentral) {
+          const t = entry.team;
+          const stats = entry.stats.reduce((acc, s) => { acc[s.name] = s.value; return acc; }, {});
+          html += `<tr>
+            <td style="padding-right:6px;">${t.shortDisplayName || t.displayName}</td>
+            <td>${stats.wins ?? '-'}</td>
+            <td>${stats.losses ?? '-'}</td>
+            <td>${stats.winPercent ? (stats.winPercent * 100).toFixed(1) : '-'}</td>
+            <td>${stats.gamesBehind ?? '-'}</td>
+          </tr>`;
+        }
+        html += `</tbody></table>`;
+        container.innerHTML = html;
+      } catch (e) {
+        container.textContent = "Standings unavailable";
+      }
+    }
+    fetchNLStandings();
+    setInterval(fetchNLStandings, 10 * 60 * 1000);
   </script>
 
   <!-- Cloudflare Worker proxy template:
