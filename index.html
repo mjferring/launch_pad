@@ -399,7 +399,7 @@
       const container = document.getElementById('mlb-nlcentral');
       try {
         // National League Central is divisionId 205 (leagueId 103 is NL)
-        const res = await fetch('https://statsapi.mlb.com/api/v1/standings?leagueId=103&season=2024&standingsTypes=regularSeason');
+        const res = await fetch('https://statsapi.mlb.com/api/v1/standings?divisionId=205&season=2024&standingsTypes=regularSeason');
         const data = await res.json();
         // Find NL Central division
         let nlCentral = null;
