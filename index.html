@@ -290,13 +290,15 @@
     // DJIA: Yahoo Finance API
     async function fetchDJIA() {
       try {
-        const res = await fetch('https://query1.finance.yahoo.com/v7/finance/quote?symbols=%5EDJI');
+        const res = await fetch(PROXY + encodeURIComponent('https://query1.finance.yahoo.com/v7/finance/quote?symbols=%5EDJI'));
         const data = await res.json();
         const quote = data.quoteResponse.result[0];
-        const value = quote.regularMarketPrice.toLocaleString();
+        const value = quote.regularMarketPrice?.toLocaleString() ?? "--";
         const change = quote.regularMarketChange;
         const percent = quote.regularMarketChangePercent;
-        const changeStr = `${change > 0 ? "▲" : change < 0 ? "▼" : ""} ${change.toFixed(2)} (${percent.toFixed(2)}%)`;
+        const changeStr = (change !== undefined && percent !== undefined)
+          ? `${change > 0 ? "▲" : change < 0 ? "▼" : ""} ${change.toFixed(2)} (${percent.toFixed(2)}%)`
+          : "Unavailable";
         document.getElementById('djia-value').textContent = value;
         document.getElementById('djia-change').textContent = changeStr;
         document.getElementById('djia-change').style.color = change > 0 ? "#2ecc40" : change < 0 ? "#ff4136" : "inherit";
