@@ -401,34 +401,40 @@
         const res = await fetch('https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/standings?region=us&lang=en&contentorigin=espn');
         const data = await res.json();
 
-        // Find the NL Central division in the new ESPN structure
-        let nlCentral = null;
-        for (const conf of data.children || []) {
-          if (conf.name && conf.name.includes('National League')) {
-            for (const div of conf.children || []) {
-              if (div.name && div.name.includes('Central')) {
-                nlCentral = div.standings?.entries;
-                break;
+        // Recursively search for a division named "Central" in the National League
+        function findNLCentral(node) {
+          if (!node) return null;
+          if (
+            (node.name && node.name.toLowerCase().includes('national league')) ||
+            (node.abbreviation && node.abbreviation === 'NL')
+          ) {
+            // Search children for "Central"
+            if (node.children) {
+              for (const div of node.children) {
+                if (
+                  (div.name && div.name.toLowerCase().includes('central')) ||
+                  (div.abbreviation && div.abbreviation === 'NL-C')
+                ) {
+                  return div.standings?.entries || null;
+                }
+                // Recursively search deeper
+                const found = findNLCentral(div);
+                if (found) return found;
               }
             }
-          }
-          if (nlCentral) break;
-        }
-
-        // Fallback: try to find by division abbreviation if above fails
-        if (!nlCentral && data.children) {
-          for (const conf of data.children) {
-            for (const div of conf.children || []) {
-              if (div.abbreviation === "NL-C") {
-                nlCentral = div.standings?.entries;
-                break;
-              }
+          } else if (node.children) {
+            for (const child of node.children) {
+              const found = findNLCentral(child);
+              if (found) return found;
             }
-            if (nlCentral) break;
           }
+          return null;
         }
 
-        if (!nlCentral || !Array.isArray(nlCentral) || nlCentral.length === 0) throw new Error("Could not find NL Central standings.");
+        const nlCentral = findNLCentral(data);
+
+        if (!nlCentral || !Array.isArray(nlCentral) || nlCentral.length === 0)
+          throw new Error("Could not find NL Central standings.");
 
         // Build table
         let html = `<table style="width:100%;font-size:14px;border-collapse:collapse;">
