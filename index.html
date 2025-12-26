@@ -10,27 +10,7 @@
     @media (prefers-color-scheme: light) { :root { --bg:#f6f7fb; --card:#ffffff; --text:#1f2937; --muted:#6b7280; --border:#e5e7eb; --shadow:0 10px 24px rgba(2,8,20,.06);}}
     *{box-sizing:border-box} body{margin:0;font:16px/1.4 system-ui,-apple-system,Segoe UI,Roboto,Noto Sans,Ubuntu,Cantarell,Helvetica Neue,Arial;background:var(--bg);color:var(--text);padding:24px}
     .container{max-width:1180px;margin:0 auto;display:grid;gap:18px}
-    .main-grid {
-      display: grid;
-      grid-template-columns: 1fr 2fr;
-      gap: 24px;
-      align-items: start;
-    }
-    .sidebar {
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
-    }
-    @media (max-width: 900px) {
-      .main-grid {
-        grid-template-columns: 1fr;
-      }
-      .sidebar {
-        flex-direction: row;
-        gap: 12px;
-      }
-    }
-    .sidebar h1 {
+    h1 {
       margin: 0 0 18px 0;
       font-size: 32px;
       font-weight: bold;
@@ -40,8 +20,27 @@
     header {
       display: flex;
       align-items: center;
-      justify-content: flex-end; /* Only controls on right */
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
       min-width: 0;
+    }
+    .weather-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 18px;
+    }
+    #weather-temp {
+      font-size: 22px;
+      font-weight: 600;
+    }
+    #weather-icon {
+      font-size: 28px;
+    }
+    #weather-desc {
+      font-size: 14px;
+      color: var(--muted);
     }
     .controls {
       display: flex;
@@ -75,29 +74,19 @@
   </style>
 </head>
 <body>
-  <div class="main-grid">
-    <!-- LEFT COLUMN -->
-    <aside class="sidebar">
-      <h1>Daily Launchpad</h1>
-      <!-- Weather Section -->
-      <section class="card weather-card">
-        <div class="section-head">
-          <div class="label"><span class="emoji">🌤️</span><strong>Clive, IA Weather</strong></div>
-        </div>
-        <div id="weather" style="display:flex;align-items:center;gap:12px;font-size:22px;min-height:48px;">
-          <span id="weather-temp">--°</span>
-          <span id="weather-icon" style="font-size:32px;">⏳</span>
-          <span id="weather-desc" style="font-size:16px;color:var(--muted);"></span>
-        </div>
-      </section>
-    </aside>
-    <!-- RIGHT COLUMN (existing content) -->
-    <div class="container">
-      <header>
-        <div class="controls">
-          <button id="refreshAll">Refresh All Feeds</button>
-        </div>
-      </header>
+  <div class="container">
+    <h1>Daily Launchpad</h1>
+    <header>
+      <div class="weather-header">
+        <span class="emoji">🌤️</span>
+        <span id="weather-temp">--°</span>
+        <span id="weather-icon">⏳</span>
+        <span id="weather-desc"></span>
+      </div>
+      <div class="controls">
+        <button id="refreshAll">Refresh All Feeds</button>
+      </div>
+    </header>
       <section class="card"><div class="section-head"><div class="label"><h2 style="margin:0;font-size:18px">Top News</h2><span class="badge">Latest first</span></div><div class="rss-toolbar"><button class="group-refresh" data-group="Top News">Refresh Group</button></div></div><div class="grid-2">
         <div id="sec-NYT" class="rss-card">
           <div class="section-head" style="margin-bottom:6px">
@@ -234,7 +223,6 @@
           <div class="rss-wrap"><ul id="list-Cubs" class="rss-list" aria-live="polite"></ul></div>
         </div>
       </div></section>
-    </div>
   </div>
 
   <script>
