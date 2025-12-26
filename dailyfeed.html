@@ -12,6 +12,11 @@
         header.site-header { border-bottom: 2px solid var(--text-color); margin-bottom: 40px; padding-bottom: 20px; }
         h1.site-title { font-size: 2rem; text-transform: uppercase; letter-spacing: 2px; }
         p.tagline { font-family: var(--font-mono); font-size: 0.9rem; color: var(--meta-color); margin-top: 5px; }
+        
+        /* --- SEARCH BOX CSS --- */
+        #search-box { width: 100%; padding: 10px; margin-top: 20px; font-family: var(--font-mono); font-size: 0.9rem; border: 1px solid #bbb; background-color: #f9f9f9; border-radius: 4px; }
+        #search-box:focus { outline: 2px solid var(--accent-color); }
+        
         .date-divider { font-family: var(--font-mono); background-color: var(--text-color); color: var(--content-bg); padding: 5px 10px; display: inline-block; margin-top: 40px; margin-bottom: 20px; font-size: 0.9rem; text-transform: uppercase; border-radius: 2px; }
         article.story { margin-bottom: 50px; border-bottom: 1px solid #ccc; padding-bottom: 30px; }
         article.story:last-child { border-bottom: none; }
@@ -22,8 +27,7 @@
         .source { font-family: var(--font-mono); font-size: 0.75rem; text-transform: uppercase; color: var(--meta-color); display: block; margin-bottom: 15px; }
         .ai-summary, .my-take { font-size: 1rem; margin-bottom: 15px; color: #333; }
         .ai-label, .take-label { font-weight: bold; font-size: 0.8rem; color: var(--meta-color); text-transform: uppercase; display: block; margin-bottom: 4px; }
-.take-label {color: var(--accent-color); }
-
+        .take-label {color: var(--accent-color); }
         footer { margin-top: 60px; text-align: center; font-size: 0.8rem; color: var(--meta-color); border-top: 1px solid #ccc; padding-top: 20px; }
         @media (max-width: 600px) { .container { padding: 20px; } .headline { font-size: 1.2rem; } }
     </style>
@@ -33,8 +37,28 @@
         <header class="site-header">
             <h1 class="site-title">The Daily Feed</h1>
             <p class="tagline">Curated stories from our absurd world</p>
+            <input type="text" id="search-box" onkeyup="filterStories()" placeholder="Type to search stories...">
         </header>
-        
+
+<div class="date-divider">Dec 26, 2025 at 11:42 AM</div>
+
+<article class="story">
+    <h3 class="headline"><a href="https://wtfdetective.blog/proud-trump-rancher-loses-entire-years-profit/">Trump Policies Cost Loyal Rancher Entire Year’s Profit
+</a></h3>
+    <span class="source">Source: WTF Detective</span>
+
+    <div class="ai-summary">
+        <span class="ai-label">Summary: </span>
+        Trump’s efforts to curb high beef prices, including boosting imports and targeting meatpackers, have slashed cattle futures and erased ranchers’ profits without lowering grocery prices. Loyal Trump-supporting ranchers say his remarks and policies destabilized markets, benefiting processors while leaving producers facing heavy losses and uncertainty.
+
+    </div>
+
+    <div class="my-take">
+        <span class="take-label">My Take: </span>
+        So strange that so many farmers are continuing to say they support Trump. They don’t like what he is doing, but they won’t back away.     
+    </div>
+</article>
+
 
 <div class="date-divider">Dec 26, 2025 at 10:42 AM</div>
 
@@ -82,22 +106,6 @@
     <div class="ai-summary">
         <span class="ai-label">Summary: </span>
         Frank Bruni argues that Susie Wiles’s candid Vanity Fair interviews reveal not discretion but the intoxicating pull of power. Despite recognizing Trump’s volatility and dysfunction, Wiles embraces her historic role, subtly seeking recognition while rationalizing excesses, illustrating how even seasoned insiders are drawn to authority, status, and proximity to power.
-
-    </div>
-
-</article>
-
-
-<div class="date-divider">Dec 26, 2025 at 10:28 AM</div>
-
-<article class="story">
-    <h3 class="headline"><a href="https://www.nytimes.com/2025/12/16/us/politics/susie-wiles-takeaways-trump.html?searchResultPosition=3">Susie Wiles Lifts Curtain on Trump World
-</a></h3>
-    <span class="source">Source: NY Times</span>
-
-    <div class="ai-summary">
-        <span class="ai-label">Summary: </span>
-        Explosive Vanity Fair interviews with White House chief of staff Susie Wiles reveal candid views on managing President Trump, internal rivalries, controversial pardons and tariffs, misinformation about Epstein, and ambitions toward Venezuela. Wiles disputes the framing but not facts, exposing a volatile administration marked by power struggles and policy clashes.
 
     </div>
 
@@ -241,10 +249,49 @@
 
 </article>
 
+<div class="date-divider">Dec 16, 2025</div>
+
+<article class="story">
+    <h3 class="headline"><a href="https://www.nytimes.com/2025/12/16/us/politics/susie-wiles-takeaways-trump.html?searchResultPosition=3">Susie Wiles Lifts Curtain on Trump World
+</a></h3>
+    <span class="source">Source: NY Times</span>
+
+    <div class="ai-summary">
+        <span class="ai-label">Summary: </span>
+        Explosive Vanity Fair interviews with White House chief of staff Susie Wiles reveal candid views on managing President Trump, internal rivalries, controversial pardons and tariffs, misinformation about Epstein, and ambitions toward Venezuela. Wiles disputes the framing but not facts, exposing a volatile administration marked by power struggles and policy clashes.
+
+    </div>
+
+</article>
 
 <footer>
             &copy; 2025 The Daily Feed.
         </footer>
     </div>
+
+    <script>
+        function filterStories() {
+            // 1. Get the search term
+            var input = document.getElementById('search-box');
+            var filter = input.value.toUpperCase();
+            
+            // 2. Get all stories
+            var stories = document.getElementsByClassName('story');
+
+            // 3. Loop through all stories
+            for (var i = 0; i < stories.length; i++) {
+                var story = stories[i];
+                // Get all text inside the story (Headline, Summary, Take)
+                var txtValue = story.textContent || story.innerText;
+                
+                // 4. Check if the text matches the search term
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    story.style.display = ""; // Show
+                } else {
+                    story.style.display = "none"; // Hide
+                }
+            }
+        }
+    </script>
 </body>
 </html>
