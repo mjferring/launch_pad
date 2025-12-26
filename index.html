@@ -32,6 +32,13 @@
       font-size: 18px;
       flex-shrink: 0;
     }
+    .link-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
     #weather-temp {
       font-size: 22px;
       font-weight: 600;
@@ -79,6 +86,9 @@
         <span id="weather-temp">--°</span>
         <span id="weather-icon">⏳</span>
         <span id="weather-desc"></span>
+      </div>
+      <div class="link-header">
+        <a href="dailyfeed.html">The Daily Feed</a>
       </div>
       <div class="controls">
         <button id="refreshAll">Refresh All Feeds</button>
