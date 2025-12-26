@@ -45,13 +45,8 @@
     .controls {
       display: flex;
       gap: 10px;
-      flex-wrap: nowrap;
-      margin-left: auto;
+      flex-wrap: wrap;
     }
-    h1, .controls {
-      min-width: 0;
-    }
-    .controls{display:flex;gap:10px;flex-wrap:wrap}
     button{padding:8px 12px;border-radius:10px;border:1px solid var(--border);background:linear-gradient(180deg,rgba(99,102,241,.10),rgba(99,102,241,.02));color:var(--text);cursor:pointer;font-weight:600}
     .hint{font-size:12px;color:var(--muted)}
     .card{grid-column:span 12;background:linear-gradient(180deg,rgba(255,255,255,.02),transparent),var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px}
@@ -77,15 +72,12 @@
   <div class="container">
     <h1>Daily Launchpad</h1>
     <header>
-      <section class="card">
-        <div class="weather-header">
-          <span class="emoji">🌤️</span>
-          <span id="weather-temp">--°</span>
-          <span id="weather-icon">⏳</span>
-          <span id="weather-desc"></span>
-          
-        </div>
-      </section>
+      <div class="weather-header">
+        <span class="emoji">🌤️</span>
+        <span id="weather-temp">--°</span>
+        <span id="weather-icon">⏳</span>
+        <span id="weather-desc"></span>
+      </div>
       <div class="controls">
         <button id="refreshAll">Refresh All Feeds</button>
       </div>
