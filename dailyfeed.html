@@ -40,6 +40,22 @@
             <input type="text" id="search-box" onkeyup="filterStories()" placeholder="Type to search stories...">
         </header>
 
+<div class="date-divider">Dec 26, 2025 at 11:50 AM</div>
+
+<article class="story">
+    <h3 class="headline"><a href="https://www.marketwatch.com/story/ai-made-tech-billionaires-even-richer-this-year-heres-how-much-4d6609b7">AI Boom Creates Dozens of New Billionaires
+</a></h3>
+    <span class="source">Source: MarketWatch</span>
+
+    <div class="ai-summary">
+        <span class="ai-label">Summary: </span>
+        Artificial intelligence fueled a surge in tech wealth in 2025, creating more than 50 new billionaires and dramatically boosting existing fortunes. Startup founders joined the ranks, while figures like Elon Musk, Google’s founders, Nvidia’s Jensen Huang, and Oracle’s Larry Ellison saw massive AI-driven gains.
+
+    </div>
+
+</article>
+
+
 <div class="date-divider">Dec 26, 2025 at 11:42 AM</div>
 
 <article class="story">
@@ -271,24 +287,45 @@
 
     <script>
         function filterStories() {
-            // 1. Get the search term
             var input = document.getElementById('search-box');
             var filter = input.value.toUpperCase();
+            var container = document.querySelector('.container');
+            var children = container.children;
             
-            // 2. Get all stories
-            var stories = document.getElementsByClassName('story');
+            // Keep track of the "current" date divider as we loop down the page
+            var activeDateDivider = null;
 
-            // 3. Loop through all stories
-            for (var i = 0; i < stories.length; i++) {
-                var story = stories[i];
-                // Get all text inside the story (Headline, Summary, Take)
-                var txtValue = story.textContent || story.innerText;
-                
-                // 4. Check if the text matches the search term
-                if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                    story.style.display = ""; // Show
-                } else {
-                    story.style.display = "none"; // Hide
+            for (var i = 0; i < children.length; i++) {
+                var element = children[i];
+
+                // CASE 1: We hit a Date Divider
+                if (element.classList.contains('date-divider')) {
+                    // Save this element as the "active" date
+                    activeDateDivider = element;
+                    // Hide it by default (we will reveal it only if we find a matching story below it)
+                    // But if the search is empty, show everything
+                    if (filter === "") {
+                        element.style.display = "";
+                    } else {
+                        element.style.display = "none";
+                    }
+                }
+
+                // CASE 2: We hit a Story
+                else if (element.classList.contains('story')) {
+                    var txtValue = element.textContent || element.innerText;
+                    
+                    // If matches search OR search is empty
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        element.style.display = ""; // Show story
+                        
+                        // Because this story is visible, its date header must also be visible
+                        if (activeDateDivider) {
+                            activeDateDivider.style.display = "";
+                        }
+                    } else {
+                        element.style.display = "none"; // Hide story
+                    }
                 }
             }
         }
